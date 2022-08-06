@@ -1,7 +1,6 @@
 
 def say_things():
-    print(f"El chocolate es una cosa pero barbara")
-    print(f"Oye tranquilo viejo")
+    return "Oye tranquilo viejo"
 
 
 if __name__ == "__main__":
