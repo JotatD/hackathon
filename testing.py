@@ -35,7 +35,7 @@ def getUrl(coin, timeUnit, timeMeasure, initialTime, finalTime):
 
     return url
 
-url = getUrl('BTC', '10', 'DAY', exampleTime, exampleTime2)
+url = getUrl('BTC', '2', 'HRS', exampleTime, exampleTime2)
 print(url)
 
 headers = {'X-CoinAPI-Key' : 'B8850AA1-7601-4966-9DA6-3906424071BB'}
@@ -44,4 +44,4 @@ data = response.json()
 
 
 for datum in data:
-        print(datum)
+    print(datum)
