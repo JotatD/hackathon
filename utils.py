@@ -22,15 +22,6 @@ def get_url(coin, time_unit, time_measure, initial_time, final_time):
     url = 'https://rest.coinapi.io/v1/ohlcv/' + coin + '/USD/history?' + 'period_id=' + period_id + \
           '&time_start=' + init_time_delta_string + '&time_end=' + final_time_string + '&limit=10000'
 
-    headers = {'X-CoinAPI-Key': 'B8850AA1-7601-4966-9DA6-3906424071BB'}
-    response = requests.get(url, headers=headers)
-    data = response.json()
-
-    if 'error' in data:
-        raise Exception(data['error'])
-    elif len(data) == 0:
-        raise Exception('Non-existing coin')
-
     return url
 
 

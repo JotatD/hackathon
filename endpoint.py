@@ -14,9 +14,23 @@ def financial_metrics_calculation(coin_a, coin_b, time_unit, time_measure, initi
     header = get_header()
 
     info_coin_a = requests.get(coin_a_url, headers=header).json()
+    
+    if 'error' in info_coin_a:
+        raise Exception(info_coin_a['error'])
+    elif len(info_coin_a) == 0:
+        raise Exception('Non-existing coin')
+
     info_coin_a = process_data(info_coin_a)
+
     info_coin_b = requests.get(coin_b_url, headers=header).json()
+
+    if 'error' in info_coin_b:
+        raise Exception(info_coin_b['error'])
+    elif len(info_coin_b) == 0:
+        raise Exception('Non-existing coin')
+
     info_coin_b = process_data(info_coin_b)
+    
 
     info_coin_a = calculate_return(info_coin_a)
     info_coin_a = calculate_volatility(info_coin_a)
