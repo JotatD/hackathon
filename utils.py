@@ -1,5 +1,5 @@
-import requests
 import pandas as pd
+import requests
 from typing import List, Dict
 
 
@@ -13,26 +13,35 @@ def process_date(date, delta_days=0):
     return date
 
 
-def get_url(coin, time_unit, time_measure, initial_time, final_time):
+def get_url(coin):
 
-    period_id = time_unit + time_measure
-    init_time_delta_string = process_date(initial_time, 30)
-    final_time_string = process_date(final_time)
-
-    url = 'https://rest.coinapi.io/v1/ohlcv/' + coin + '/USD/history?' + 'period_id=' + period_id + \
-          '&time_start=' + init_time_delta_string + '&time_end=' + final_time_string + '&limit=10000'
+    url = f'https://min-api.cryptocompare.com/data/v2/histoday?fsym={coin}&tsym=USD&limit=2000'
 
     return url
 
 
-def get_header():
-    return {'X-CoinAPI-Key': 'B8850AA1-7601-4966-9DA6-3906424071BB'}
+def get_data(coin):
+    coin_url = get_url(coin)
+
+    info_coin = requests.get(coin_url).json()
+
+    if 'error' in info_coin:
+        raise Exception(info_coin['error'])
+    elif len(info_coin) == 0:
+        raise Exception('Non-existing coin')
+
+    info_coin = process_data(info_coin['Data']['Data'])
+    info_coin.columns.name = coin
+    return info_coin
 
 
 def process_data(data: List[Dict]):
-    crypto_data = pd.DataFrame(data)[["time_close", "price_close"]]
-    crypto_data = crypto_data.rename(columns={"time_close": "date", "price_close": "price"})
-    crypto_data["date"] = pd.to_datetime(crypto_data["date"]).dt.strftime("%Y-%m-%d")
-    crypto_data = crypto_data.set_index("date")
+
+    crypto_data = pd.DataFrame(data)
+    crypto_data = crypto_data.rename(columns={'time': 'date', 'close': 'price'})
+    crypto_data = crypto_data[['date', 'price']]
+    crypto_data['date'] = pd.to_datetime(crypto_data['date'], unit='s')
+    crypto_data = crypto_data.set_index('date')
+
     return crypto_data
 
