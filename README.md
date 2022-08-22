@@ -1,4 +1,4 @@
-# Hackathon
+# Daisi
 
 Use it to compare the return and volatility of two assets. Also, get the Global Minimum Variance weighted distribution for the portfolio. Run the app or use the endpoints!
 
