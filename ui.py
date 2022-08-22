@@ -5,14 +5,7 @@ from utils import get_data
 import datetime
 
 
-@st.cache
-def fetch_data(coin1, coin2, init_time, final_time):
-    info_coin1 = get_data(coin1)
-    info_coin2 = get_data(coin2)
-    return financial_metrics_calculation(info_coin1, info_coin2, init_time, final_time)
-
-
-def create_graphs():
+def st_ui():
 
     with st.form("my_form"):
         col1, col2 = st.columns(2)
@@ -66,7 +59,11 @@ def create_graphs():
 
         # st.write(data[1])
 
+@st.cache
+def fetch_data(coin1, coin2, init_time, final_time):
+    info_coin1 = get_data(coin1)
+    info_coin2 = get_data(coin2)
+    return financial_metrics_calculation(info_coin1, info_coin2, init_time, final_time)
 
 if __name__ == "__main__":
-
-    create_graphs()
+    st_ui()
