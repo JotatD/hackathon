@@ -23,31 +23,45 @@ def create_graphs():
         with col2:
             coin2 = st.text_input('Asset 2', value='ETH', key=2)
             final_time = st.date_input("Final time of comparison", datetime.date(2022, 8, 1))
+
         submitted = st.form_submit_button("Submit")
 
     if submitted:
         data = fetch_data(coin1, coin2, init_time, final_time)
+
+        st.subheader('Total Volatility and Return')
         comparison_data = financial_data_comparison(data[0])
-        [ef, w_gmv, r_gmv, vol_gmv] = global_minimum_variance(data[0])
+        comparison_data.iloc[:, 0] = comparison_data.iloc[:, 0].map("{:,.4f}%".format)
+        comparison_data.iloc[:, 1] = comparison_data.iloc[:, 1].map("{:,.4f}%".format)
         st.table(comparison_data)
 
-        fig_return = px.line(data[0], title="Assets Return")
+        st.subheader('Assets return')
+        fig_return = px.line(data[0])
         fig_return.update_layout(yaxis_title="Return")
         fig_return.update_layout(xaxis_title="Date")
         fig_return['data'][0]['line']['color'] = "#332FD0"
         fig_return['data'][1]['line']['color'] = "#D89216"
         st.plotly_chart(fig_return)
-        fig_volatility = px.line(data[1], title="Assets Volatility")
+
+        st.subheader("Assets Volatility")
+        fig_volatility = px.line(data[1])
         fig_volatility.update_layout(yaxis_title="Volatility")
         fig_volatility.update_layout(xaxis_title="Date")
         fig_volatility['data'][0]['line']['color'] = "#332FD0"
         fig_volatility['data'][1]['line']['color'] = "#D89216"
         st.plotly_chart(fig_volatility)
-        fig_gmv = px.line(x=ef["Volatility"], y=ef["Returns"], title="Global Minimum Variance Optimization")
+
+        st.subheader("Global Minimum Variance Optimization")
+        [ef, w_gmv, r_gmv, vol_gmv] = global_minimum_variance(data[0])
+        fig_gmv = px.line(x=ef["Volatility"], y=ef["Returns"])
         fig_gmv.add_scatter(x=[vol_gmv], y=[r_gmv], name="GMV Point")
         fig_gmv.update_layout(yaxis_title="Return")
         fig_gmv.update_layout(xaxis_title="Volatility")
         st.plotly_chart(fig_gmv)
+
+        w_gmv.iloc[:, 0] = w_gmv.iloc[:, 0].map("{:,.4f}%".format)
+        w_gmv.iloc[:, 1] = w_gmv.iloc[:, 1].map("{:,.4f}%".format)
+        st.subheader('Weighted distribution')
         st.table(w_gmv)
 
         # st.write(data[1])
